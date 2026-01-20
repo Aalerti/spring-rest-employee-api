@@ -1,12 +1,11 @@
 package com.maximbrett.spring.rest.controller;
 
-import com.maximbrett.spring.rest.dao.EmployeeDAO;
+
 import com.maximbrett.spring.rest.dto.EmployeeDTO;
 import com.maximbrett.spring.rest.entity.Employee;
-import com.maximbrett.spring.rest.exception_handling.EmployeeIncorrectData;
-import com.maximbrett.spring.rest.exception_handling.NoSuchEmployeeException;
 import com.maximbrett.spring.rest.mapper.EmployeeMapper;
 import com.maximbrett.spring.rest.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,35 +27,39 @@ public class MyRESTController {
     }
 
     @GetMapping("/employees")
-    public List<EmployeeDTO> showAllEmployees() {
+    public ResponseEntity<List<EmployeeDTO>> showAllEmployees() {
         List<Employee> employeeList =  employeeService.getAllEmployees();
-        return employeeMapper.employeeToEmployeeDTOList(employeeList);
+        List<EmployeeDTO> dtoList = employeeMapper.employeeToEmployeeDTOList(employeeList);
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/employees/{id}")
-    public EmployeeDTO getEmployeeById(@PathVariable long id) {
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable long id) {
         Employee employee = employeeService.getEmployee(id);
-        return employeeMapper.employeeToEmployeeDTO(employee);
+        EmployeeDTO dto =  employeeMapper.employeeToEmployeeDTO(employee);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/employees")
-    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<EmployeeDTO> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.employeeDTOToEmployee(employeeDTO);
         employeeService.saveEmployee(employee);
-        return employeeMapper.employeeToEmployeeDTO(employee);
+        EmployeeDTO dto =  employeeMapper.employeeToEmployeeDTO(employee);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/employees")
-    public EmployeeDTO updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<EmployeeDTO> updateEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.employeeDTOToEmployee(employeeDTO);
         employeeService.saveEmployee(employee);
-        return employeeMapper.employeeToEmployeeDTO(employee);
+        EmployeeDTO updateDto = employeeMapper.employeeToEmployeeDTO(employee);
+        return ResponseEntity.ok(updateDto);
     }
 
     @DeleteMapping("/employees/{id}")
-    public String deleteEmployee(@PathVariable long id) {
+    public ResponseEntity<String> deleteEmployee(@PathVariable long id) {
         employeeService.deleteEmployee(id);
-        return "Employee with id " + id + " has been deleted";
+        return ResponseEntity.ok("Employee with id " + id + " has been deleted");
     }
 
 

@@ -1,9 +1,11 @@
 package com.maximbrett.spring.rest.configuration;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,16 +22,29 @@ import java.util.Properties;
 @ComponentScan(basePackages= "com.maximbrett.spring.rest")
 @EnableWebMvc
 @EnableTransactionManagement
+@PropertySource("classpath:db. properties")
 public class MyConfig implements WebMvcConfigurer {
+
+    @Value("${db.driver}")
+    private String dbDriver;
+
+    @Value("${db. url}")
+    private String dbUrl;
+
+    @Value("${db.username}")
+    private String dbUsername;
+
+    @Value("${db.password}")
+    private String dbPassword;
 
     @Bean
     public DataSource dataSource() {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
-            dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/my_db?useSSL=false");
-            dataSource.setUser("bestuser");
-            dataSource.setPassword("bestuser");
+            dataSource.setDriverClass(dbDriver);
+            dataSource.setJdbcUrl(dbUrl);
+            dataSource.setUser(dbUsername);
+            dataSource.setPassword(dbPassword);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }

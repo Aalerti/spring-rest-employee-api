@@ -1,7 +1,6 @@
 package com.maximbrett.spring.rest.dao;
 
 import com.maximbrett.spring.rest.entity.Employee;
-import com.maximbrett.spring.rest.service.EmployeeService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;

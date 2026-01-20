@@ -5,12 +5,13 @@ target/
 .kotlin
 
 ### IntelliJ IDEA ###
+.idea/
+*.iml
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
 *.iws
-*.iml
 *.ipr
 
 ### Eclipse ###
@@ -40,3 +41,12 @@ build/
 
 ### Logs ###
 *.log
+
+# Maven
+target/
+
+# Compiled files
+*.class
+
+# Конфиденциальные настройки (опционально - если хотите скрыть db.properties)
+src/main/resources/db.properties
