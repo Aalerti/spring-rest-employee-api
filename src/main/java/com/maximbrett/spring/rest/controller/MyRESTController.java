@@ -1,9 +1,11 @@
 package com.maximbrett.spring.rest.controller;
 
+import com.maximbrett.spring.rest.dao.EmployeeDAO;
 import com.maximbrett.spring.rest.dto.EmployeeDTO;
 import com.maximbrett.spring.rest.entity.Employee;
 import com.maximbrett.spring.rest.exception_handling.EmployeeIncorrectData;
 import com.maximbrett.spring.rest.exception_handling.NoSuchEmployeeException;
+import com.maximbrett.spring.rest.mapper.EmployeeMapper;
 import com.maximbrett.spring.rest.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,36 +19,38 @@ import java.util.List;
 public class MyRESTController {
 
     private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public MyRESTController(EmployeeService employeeService) {
+    public MyRESTController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
     }
 
     @GetMapping("/employees")
     public List<EmployeeDTO> showAllEmployees() {
         List<Employee> employeeList =  employeeService.getAllEmployees();
-        return employeeList.stream().map(this::converToEmployeeDTO).toList();
+        return employeeMapper.employeeToEmployeeDTOList(employeeList);
     }
 
     @GetMapping("/employees/{id}")
     public EmployeeDTO getEmployeeById(@PathVariable long id) {
         Employee employee = employeeService.getEmployee(id);
-        return converToEmployeeDTO(employee);
+        return employeeMapper.employeeToEmployeeDTO(employee);
     }
 
     @PostMapping("/employees")
     public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        Employee employee = converToEmployee(employeeDTO);
+        Employee employee = employeeMapper.employeeDTOToEmployee(employeeDTO);
         employeeService.saveEmployee(employee);
-        return converToEmployeeDTO(employee);
+        return employeeMapper.employeeToEmployeeDTO(employee);
     }
 
     @PutMapping("/employees")
     public EmployeeDTO updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        Employee employee = converToEmployee(employeeDTO);
+        Employee employee = employeeMapper.employeeDTOToEmployee(employeeDTO);
         employeeService.saveEmployee(employee);
-        return converToEmployeeDTO(employee);
+        return employeeMapper.employeeToEmployeeDTO(employee);
     }
 
     @DeleteMapping("/employees/{id}")
@@ -56,7 +60,7 @@ public class MyRESTController {
     }
 
 
-    private EmployeeDTO converToEmployeeDTO(Employee employee) {
+    /*private EmployeeDTO converToEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setId(employee.getId());
         employeeDTO.setName(employee.getName());
@@ -74,5 +78,5 @@ public class MyRESTController {
         employee.setDepartment(employeeDTO.getDepartment());
         employee.setSalary(employeeDTO.getSalary());
         return employee;
-    }
+    }*/
 }
